@@ -30,6 +30,8 @@ def get_all_animals():
 
 # Function with a single parameter
 def get_single_animal(id):
+    """loop over animal dictonaries
+    """
     # Variable to hold the found animal, if it exists
     requested_animal = None
 
