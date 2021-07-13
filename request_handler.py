@@ -25,6 +25,7 @@ from employees import (
     get_single_employee,
     create_employee,
     delete_employee,
+    update_employee
 )
 
 
@@ -148,6 +149,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             update_animal(id, post_body)
         elif resource == "locations":
             update_location(id, post_body)
+        elif resource == "employees":
+            update_employee(id, post_body)
 
         # Encode the new animal and send in response
         self.wfile.write("".encode())
