@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-from animals.request import get_all_animals, get_single_animal, create_animal
+from animals.request import get_all_animals, get_single_animal, create_animal, delete_animal
 from customers import get_all_customers, get_single_customer, create_customer
 from locations import get_all_locations, get_single_location, create_location
 from employees import get_all_employees, get_single_employee, create_employee
@@ -136,6 +136,22 @@ class HandleRequests(BaseHTTPRequestHandler):
             pass  # Request had trailing slash: /customers/
 
         return (resource, id)  # This is a tuple
+
+    def do_DELETE(self):
+        """delete item by id"""
+    # Set a 204 response code
+        self._set_headers(204)
+
+    # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+    # Delete a single animal from the list
+        if resource == "animals":
+            delete_animal(id)
+
+    # Encode the new animal and send in response
+        self.wfile.write("".encode())
+
 
 
 # This function is not inside the class. It is the starting

@@ -1,31 +1,12 @@
 ANIMALS = [
-    {
-        "id": 1,
-        "name": "Snickers",
-        "species": "Dog",
-        "locationId": 1,
-        "customerId": 4
-    },
-    {
-        "id": 2,
-        "name": "Gypsy",
-        "species": "Dog",
-        "locationId": 1,
-        "customerId": 2
-    },
-    {
-        "id": 3,
-        "name": "Blue",
-        "species": "Cat",
-        "locationId": 2,
-        "customerId": 1
-    }
+    {"id": 1, "name": "Snickers", "species": "Dog", "locationId": 1, "customerId": 4},
+    {"id": 2, "name": "Gypsy", "species": "Dog", "locationId": 1, "customerId": 2},
+    {"id": 3, "name": "Blue", "species": "Cat", "locationId": 2, "customerId": 1},
 ]
 
 
 def get_single_animal(id):
-    """loop over animal dictonaries
-    """
+    """loop over animal dictonaries"""
     # Variable to hold the found animal, if it exists
     requested_animal = None
 
@@ -41,16 +22,15 @@ def get_single_animal(id):
 
 
 def get_all_animals():
-    """returning the animal dictonaries
-    """
+    """returning the animal dictonaries"""
     return ANIMALS
+
 
 # Function with a single parameter
 
 
 def create_animal(animal):
-    """get id for animals
-    """
+    """get id for animals"""
     # Get the id value of the last animal in the list
     max_id = ANIMALS[-1]["id"]
 
@@ -65,3 +45,21 @@ def create_animal(animal):
 
     # Return the dictionary with `id` property added
     return animal
+
+
+def delete_animal(id):
+    """delete animal by id
+    """
+    # Initial -1 value for animal index, in case one isn't found
+    animal_index = -1
+
+    # Iterate the ANIMALS list, but use enumerate() so that you
+    # can access the index value of each item
+    for index, animal in enumerate(ANIMALS):
+        if animal["id"] == id:
+            # Found the animal. Store the current index.
+            animal_index = index
+
+    # If the animal was found, use pop(int) to remove it from list
+    if animal_index >= 0:
+        ANIMALS.pop(animal_index)
