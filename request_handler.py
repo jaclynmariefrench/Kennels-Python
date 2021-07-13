@@ -12,6 +12,7 @@ from customers import (
     get_single_customer,
     create_customer,
     delete_customer,
+    update_customer
 )
 from locations import (
     get_all_locations,
@@ -151,6 +152,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             update_location(id, post_body)
         elif resource == "employees":
             update_employee(id, post_body)
+        elif resource == "customers":
+            update_customer(id, post_body)
 
         # Encode the new animal and send in response
         self.wfile.write("".encode())
