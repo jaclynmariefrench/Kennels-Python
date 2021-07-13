@@ -18,6 +18,7 @@ from locations import (
     get_single_location,
     create_location,
     delete_location,
+    update_location
 )
 from employees import (
     get_all_employees,
@@ -145,6 +146,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Delete a single animal from the list
         if resource == "animals":
             update_animal(id, post_body)
+        elif resource == "locations":
+            update_location(id, post_body)
 
         # Encode the new animal and send in response
         self.wfile.write("".encode())
