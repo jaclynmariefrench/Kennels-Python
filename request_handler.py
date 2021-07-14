@@ -148,11 +148,11 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Delete a single animal from the list
         if resource == "animals":
             update_animal(id, post_body)
-        elif resource == "locations":
+        if resource == "locations":
             update_location(id, post_body)
-        elif resource == "employees":
+        if resource == "employees":
             update_employee(id, post_body)
-        elif resource == "customers":
+        if resource == "customers":
             update_customer(id, post_body)
 
         # Encode the new animal and send in response
@@ -191,11 +191,11 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Delete a single animal from the list
         if resource == "animals":
             delete_animal(id)
-        elif resource == "locations":
+        if resource == "locations":
             delete_location(id)
-        elif resource == "employees":
+        if resource == "employees":
             delete_employee(id)
-        elif resource == "customers":
+        if resource == "customers":
             delete_customer(id)
 
         # Encode the new animal and send in response
