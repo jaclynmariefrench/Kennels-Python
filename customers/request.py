@@ -1,57 +1,112 @@
+import sqlite3
+import json
+from models import Customer
+
+
 CUSTOMERS = [
     {
         "id": 1,
         "name": "Hannah Hall",
         "address": "7002 Chestnut Ct",
-        "animalId": 1,
+        "customerId": 1,
         "email": "hannah@kennels.com",
     },
     {
         "id": 2,
         "name": "Jennifer French",
         "address": "100 Home",
-        "animalId": 2,
+        "customerId": 2,
         "email": "jennifer@kennels.com",
     },
     {
         "id": 3,
         "name": "Becky Vanderbeck",
         "address": "1000 Places St",
-        "animalId": 3,
+        "customerId": 3,
         "email": "becky@kennels.com",
     },
     {
         "id": 4,
         "name": "Vicki Picky",
         "address": "Somewhere Lane",
-        "animalId": 4,
+        "customerId": 4,
         "email": "vicki@kennels.com",
     },
 ]
 
 
 def get_all_customers():
-    """returning the customer dictonaries"""
-    return CUSTOMERS
+    """Getting all the customers usings SOL
+    """
+    # Open a connection to the database
+    with sqlite3.connect("./kennel.db") as conn:
 
+        # Just use these. It's a Black Box.
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
 
-# Function with a single parameter
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        SELECT
+            c.id,
+            c.name,
+            c.address,
+            c.email,
+            c.password
+        FROM customer c
+        """)
+
+        # Initialize an empty list to hold all customer representations
+        customers = []
+
+        # Convert rows of data into a Python list
+        dataset = db_cursor.fetchall()
+
+        # Iterate list of data returned from database
+        for row in dataset:
+
+            # Create an customer instance from the current row.
+            # Note that the database fields are specified in
+            # exact order of the parameters defined in the
+            # customer class above.
+            customer = Customer(row['id'], row['name'], row['address'],
+                            row['email'], row['password'])
+
+            customers.append(customer.__dict__)
+
+    # Use `json` package to properly serialize list as JSON
+    return json.dumps(customers)
+
 
 
 def get_single_customer(id):
-    """loop over customer dictonaries"""
-    # Variable to hold the found customer, if it exists
-    requested_customer = None
+    """Getting a specific customer by the ID using SQL
+    """
+    with sqlite3.connect("./kennel.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
 
-    # Iterate the customers list above. Very similar to the
-    # for..of loops you used in JavaScript.
-    for customer in CUSTOMERS:
-        # Dictionaries in Python use [] notation to find a key
-        # instead of the dot notation that JavaScript used.
-        if customer["id"] == id:
-            requested_customer = customer
+        # Use a ? parameter to inject a variable's value
+        # into the SQL statement.
+        db_cursor.execute("""
+        SELECT
+            c.id,
+            c.name,
+            c.address,
+            c.email,
+            c.password,
+        FROM customer c
+        WHERE c.id = ?
+        """, ( id, ))
 
-    return requested_customer
+        # Load the single result into memory
+        data = db_cursor.fetchone()
+
+        # Create an customer instance from the current row
+        customer = Customer(data['id'], data['name'], data['address'],
+                            data['email'], data['password'])
+
+        return json.dumps(customer.__dict__)
 
 
 def create_customer(customer):

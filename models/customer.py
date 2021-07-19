@@ -1,12 +1,12 @@
 class Customer:
     """class for new customer dictonary"""
 
-    def __init__(self, id, name, address, animal_id, email):
+    def __init__(self, id, name, address, email, password):
         self.id = id
         self.name = name
         self.address = address
-        self.animal_id = animal_id
         self.email = email
+        self.password = password
 
 
 new_customer = Customer(
