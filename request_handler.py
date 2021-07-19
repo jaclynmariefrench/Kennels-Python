@@ -123,11 +123,11 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         if resource == "animals":
             response = create_animal(post_body)
-        if resource == "locations":
+        elif resource == "locations":
             response = create_location(post_body)
-        if resource == "employees":
+        elif resource == "employees":
             response = create_employee(post_body)
-        if resource == "customers":
+        elif resource == "customers":
             response = create_customer(post_body)
 
         self.wfile.write(f"{response}".encode())
