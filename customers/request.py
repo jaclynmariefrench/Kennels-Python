@@ -71,13 +71,14 @@ def get_all_customers():
             # exact order of the parameters defined in the
             # customer class above.
             customer = Customer(
-                row['id'], row['name'], row['address'], row['email'], row['password']
+                row["id"], row["name"], row["address"], row["email"], row["password"]
             )
 
             customers.append(customer.__dict__)
 
     # Use `json` package to properly serialize list as JSON
     return json.dumps(customers)
+
 
 def get_single_customer(id):
     """Getting a specific customer by the id using SQL"""
@@ -106,7 +107,7 @@ def get_single_customer(id):
 
         # Create an customer instance from the current row
         customer = Customer(
-            data['id'], data['name'], data['address'], data['email'], data['password']
+            data["id"], data["name"], data["address"], data["email"], data["password"]
         )
 
         return json.dumps(customer.__dict__)
@@ -150,3 +151,36 @@ def update_customer(id, new_customer):
             # Found the customer. Update the value.
             CUSTOMERS[index] = new_customer
             break
+
+
+def get_customers_by_email(email):
+    """Get customers by email address"""
+    with sqlite3.connect("./kennel.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Write the SQL query to get the information you want
+        db_cursor.execute(
+            """
+        select
+            c.id,
+            c.name,
+            c.address,
+            c.email,
+            c.password
+        from Customer c
+        WHERE c.email = ?
+        """,
+            (email,),
+        )
+
+        customers = []
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+            customer = Customer(
+                row["id"], row["name"], row["address"], row["email"], row["password"]
+            )
+            customers.append(customer.__dict__)
+
+    return json.dumps(customers)
