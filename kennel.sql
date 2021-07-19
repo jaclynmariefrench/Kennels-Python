@@ -12,7 +12,7 @@ CREATE TABLE `Employee` (
     FOREIGN KEY(`location_id`) REFERENCES `Location`(`id`)
 );
 
-CREATE TABLE `Customer` (
+CREATE TABLE IF NOT EXISTS `Customer` (
     `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     `name` TEXT NOT NULL,
     `address` TEXT NOT NULL,
@@ -98,3 +98,5 @@ INSERT INTO `Animal`
 VALUES (null, "Doodles", "Kennel", "Poodle", 3, 1);
 INSERT INTO `Animal`
 VALUES (null, "Daps", "Kennel", "Boxer", 2, 2);
+
+

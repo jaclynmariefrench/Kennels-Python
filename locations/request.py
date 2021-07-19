@@ -1,3 +1,7 @@
+import sqlite3
+import json
+from models import Location
+
 LOCATIONS = [
     {"id": 1, "name": "Nashville North", "address": "8422 Johnson Pike"},
     {"id": 2, "name": "Nashville South", "address": "209 Emory Drive"},
@@ -7,27 +11,70 @@ LOCATIONS = [
 
 
 def get_all_locations():
-    """returning the location dictonaries"""
-    return LOCATIONS
+    """Getting all the locations usings SOL
+    """
+    # Open a connection to the database
+    with sqlite3.connect("./kennel.db") as conn:
 
+        # Just use these. It's a Black Box.
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
 
-# Function with a single parameter
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        SELECT
+            a.id,
+            a.name,
+            a.address
+        FROM location a
+        """)
+
+        # Initialize an empty list to hold all location representations
+        locations = []
+
+        # Convert rows of data into a Python list
+        dataset = db_cursor.fetchall()
+
+        # Iterate list of data returned from database
+        for row in dataset:
+
+            # Create an location instance from the current row.
+            # Note that the database fields are specified in
+            # exact order of the parameters defined in the
+            # location class above.
+            location = Location(row['id'], row['name'], row['address'])
+
+            locations.append(location.__dict__)
+
+    # Use `json` package to properly serialize list as JSON
+    return json.dumps(locations)
 
 
 def get_single_location(id):
-    """loop over location dictonaries"""
-    # Variable to hold the found location, if it exists
-    requested_location = None
+    """Getting a specific location by the ID using SQL
+    """
+    with sqlite3.connect("./kennel.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
 
-    # Iterate the locations list above. Very similar to the
-    # for..of loops you used in JavaScript.
-    for location in LOCATIONS:
-        # Dictionaries in Python use [] notation to find a key
-        # instead of the dot notation that JavaScript used.
-        if location["id"] == id:
-            requested_location = location
+        # Use a ? parameter to inject a variable's value
+        # into the SQL statement.
+        db_cursor.execute("""
+        SELECT
+            a.id,
+            a.name,
+            a.address
+        FROM location a
+        WHERE a.id = ?
+        """, ( id, ))
 
-    return requested_location
+        # Load the single result into memory
+        data = db_cursor.fetchone()
+
+        # Create an location instance from the current row
+        location = Location(data['id'], data['name'], data['address'])
+
+        return json.dumps(location.__dict__)
 
 
 def create_location(location):
