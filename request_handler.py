@@ -120,7 +120,7 @@ class HandleRequests(BaseHTTPRequestHandler):
             elif key == "location_id" and resource == "employees":
                 response = get_employee_by_location(value)
             elif key == "status" and resource == "animals":
-                resource = get_animal_by_status(value)
+                response = get_animal_by_status(value)
 
         self.wfile.write(response.encode())
 
