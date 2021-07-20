@@ -168,7 +168,7 @@ def get_customers_by_email(email):
             c.address,
             c.email,
             c.password
-        from Customer c
+        from customer c
         WHERE c.email = ?
         """,
             (email,),

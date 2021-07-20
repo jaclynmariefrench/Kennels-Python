@@ -16,15 +16,15 @@ from customers import (
     get_customers_by_email
 )
 from locations import (
-    get_all_locations,
-    get_single_location,
+    #get_all_locations,
+    #get_single_location,
     create_location,
     delete_location,
     update_location,
 )
 from employees import (
-    get_all_employees,
-    get_single_employee,
+    #get_all_employees,
+    #get_single_employee,
     create_employee,
     delete_employee,
     update_employee,
