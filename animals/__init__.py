@@ -5,4 +5,5 @@ from .request import (
     delete_animal,
     update_animal,
     get_animal_by_location,
+    get_animal_by_status
 )
