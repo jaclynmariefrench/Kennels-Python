@@ -1,6 +1,8 @@
+from models.location import Location
 import sqlite3
 import json
 from models import Employee
+from models import Location
 
 EMPLOYEES = [
     {"id": 1, "name": "Jeremy Bakker", "employeeId": 2},
@@ -27,8 +29,11 @@ def get_all_employees():
             a.id,
             a.name,
             a.address,
-            a.location_id
+            a.location_id,
+            l.name location_name,
+            l.address location_address
         FROM employee a
+        JOIN Location l ON l.id = a.location_id
         """
         )
 
@@ -46,9 +51,17 @@ def get_all_employees():
             # exact order of the parameters defined in the
             # employee class above.
             employee = Employee(
-                row["id"], row["name"], row["address"], row["location_id"]
+                row["id"], 
+                row["name"], 
+                row["address"], 
+                row["location_id"]
             )
-
+            location = Location(
+                row["location_id"],
+                row["location_name"],
+                row["location_address"]
+            )
+            employee.location = location.__dict__
             employees.append(employee.__dict__)
 
     # Use `json` package to properly serialize list as JSON
@@ -120,15 +133,22 @@ def update_employee(id, new_employee):
     with sqlite3.connect("./kennel.db") as conn:
         db_cursor = conn.cursor()
 
-        db_cursor.execute("""
+        db_cursor.execute(
+            """
         UPDATE Employee
             SET
                 name = ?,
                 address = ?,
                 location_id = ?,
         WHERE id = ?
-        """, (new_employee['name'], new_employee['address'],
-            new_employee['location_id'], id, ))
+        """,
+            (
+                new_employee["name"],
+                new_employee["address"],
+                new_employee["location_id"],
+                id,
+            ),
+        )
 
         # Were any rows affected?
         # Did the client send an `id` that exists?
@@ -167,10 +187,7 @@ def get_employee_by_location(location_id):
 
         for row in dataset:
             employee = Employee(
-                row["id"],
-                row["name"],
-                row["address"],
-                row["location_id"]
+                row["id"], row["name"], row["address"], row["location_id"]
             )
             employees.append(employee.__dict__)
 
