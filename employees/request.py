@@ -51,15 +51,10 @@ def get_all_employees():
             # exact order of the parameters defined in the
             # employee class above.
             employee = Employee(
-                row["id"], 
-                row["name"], 
-                row["address"], 
-                row["location_id"]
+                row["id"], row["name"], row["address"], row["location_id"]
             )
             location = Location(
-                row["location_id"],
-                row["location_name"],
-                row["location_address"]
+                row["location_id"], row["location_name"], row["location_address"]
             )
             employee.location = location.__dict__
             employees.append(employee.__dict__)

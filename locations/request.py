@@ -119,7 +119,7 @@ def update_location(id, new_location):
         UPDATE Location
             SET
                 name = ?,
-                address = ?,
+                address = ?
         WHERE id = ?
         """,
             (
