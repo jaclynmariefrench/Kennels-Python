@@ -7,7 +7,7 @@ from animals.request import (
     delete_animal,
     update_animal,
     get_animal_by_location,
-    get_animal_by_status
+    get_animal_by_status,
 )
 from customers import (
     get_all_customers,
@@ -124,47 +124,6 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         self.wfile.write(response.encode())
 
-    # def do_GET(self):
-    #     """Getting"""
-    #     self._set_headers(200)
-    #     response = {}  # Default response
-
-    #     # Parse the URL and capture the tuple that is returned
-    #     (resource, id) = self.parse_url(self.path)
-    #     # customers
-    #     if resource == "customers":
-    #         if id is not None:
-    #             response = f"{get_single_customer(id)}"
-
-    #         else:
-    #             response = f"{get_all_customers()}"
-    #     # animals
-    #     elif resource == "animals":
-    #         if id is not None:
-    #             response = f"{get_single_animal(id)}"
-
-    #         else:
-    #             response = f"{get_all_animals()}"
-    #     # locations
-    #     elif resource == "locations":
-    #         if id is not None:
-    #             response = f"{get_single_location(id)}"
-
-    #         else:
-    #             response = f"{get_all_locations()}"
-    #     # employees
-    #     elif resource == "employees":
-    #         if id is not None:
-    #             response = f"{get_single_employee(id)}"
-
-    #         else:
-    #             response = f"{get_all_employees()}"
-    #         # This weird code sends a response back to the client
-    #     self.wfile.write(response.encode())
-
-    # Here's a method on the class that overrides the parent's method.
-    # It handles any POST request.
-
     def do_POST(self):
         """Posting all types from page"""
         self._set_headers(201)
@@ -194,8 +153,7 @@ class HandleRequests(BaseHTTPRequestHandler):
     # It handles any PUT request.
 
     def do_PUT(self):
-        """edits the content"""
-        self._set_headers(204)
+        """updating PUT method to work with SQL"""
         content_len = int(self.headers.get("content-length", 0))
         post_body = self.rfile.read(content_len)
         post_body = json.loads(post_body)
@@ -203,17 +161,25 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
 
-        # Delete a single animal from the list
-        if resource == "animals":
-            update_animal(id, post_body)
-        if resource == "locations":
-            update_location(id, post_body)
-        if resource == "employees":
-            update_employee(id, post_body)
-        if resource == "customers":
-            update_customer(id, post_body)
+        success = False
 
-        # Encode the new animal and send in response
+        if resource == "animals":
+            success = update_animal(id, post_body)
+
+        elif resource == "customers":
+            success = update_customer(id, post_body)
+
+        elif resource == "employees":
+            success = update_employee(id, post_body)
+
+        elif resource == "locations":
+            success = update_location(id, post_body)
+
+        if success:
+            self._set_headers(204)
+        else:
+            self._set_headers(404)
+
         self.wfile.write("".encode())
 
     def parse_url(self, path):

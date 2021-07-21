@@ -11,8 +11,7 @@ LOCATIONS = [
 
 
 def get_all_locations():
-    """Getting all the locations usings SOL
-    """
+    """Getting all the locations usings SOL"""
     # Open a connection to the database
     with sqlite3.connect("./kennel.db") as conn:
 
@@ -21,13 +20,15 @@ def get_all_locations():
         db_cursor = conn.cursor()
 
         # Write the SQL query to get the information you want
-        db_cursor.execute("""
+        db_cursor.execute(
+            """
         SELECT
             a.id,
             a.name,
             a.address
         FROM location a
-        """)
+        """
+        )
 
         # Initialize an empty list to hold all location representations
         locations = []
@@ -42,7 +43,7 @@ def get_all_locations():
             # Note that the database fields are specified in
             # exact order of the parameters defined in the
             # location class above.
-            location = Location(row['id'], row['name'], row['address'])
+            location = Location(row["id"], row["name"], row["address"])
 
             locations.append(location.__dict__)
 
@@ -51,28 +52,30 @@ def get_all_locations():
 
 
 def get_single_location(id):
-    """Getting a specific location by the ID using SQL
-    """
+    """Getting a specific location by the ID using SQL"""
     with sqlite3.connect("./kennel.db") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
         # Use a ? parameter to inject a variable's value
         # into the SQL statement.
-        db_cursor.execute("""
+        db_cursor.execute(
+            """
         SELECT
             a.id,
             a.name,
             a.address
         FROM location a
         WHERE a.id = ?
-        """, ( id, ))
+        """,
+            (id,),
+        )
 
         # Load the single result into memory
         data = db_cursor.fetchone()
 
         # Create an location instance from the current row
-        location = Location(data['id'], data['name'], data['address'])
+        location = Location(data["id"], data["name"], data["address"])
 
         return json.dumps(location.__dict__)
 
@@ -107,11 +110,32 @@ def delete_location(id):
 
 
 def update_location(id, new_location):
-    """updates location by id"""
-    # Iterate the locationS list, but use enumerate() so that
-    # you can access the index value of each item.
-    for index, location in enumerate(LOCATIONS):
-        if location["id"] == id:
-            # Found the location. Update the value.
-            LOCATIONS[index] = new_location
-            break
+    """updating location in SQL"""
+    with sqlite3.connect("./kennel.db") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+        UPDATE Location
+            SET
+                name = ?,
+                address = ?,
+        WHERE id = ?
+        """,
+            (
+                new_location["name"],
+                new_location["address"],
+                id,
+            ),
+        )
+
+        # Were any rows affected?
+        # Did the client send an `id` that exists?
+        rows_affected = db_cursor.rowcount
+
+    if rows_affected == 0:
+        # Forces 404 response by main module
+        return False
+    else:
+        # Forces 204 response by main module
+        return True
