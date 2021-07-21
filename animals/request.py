@@ -1,6 +1,7 @@
 import sqlite3
 import json
 from models import Animal
+from models import Location
 
 
 ANIMALS = [
@@ -71,12 +72,13 @@ def get_single_animal(id):
 
 
 def get_all_animals():
-    """Getting all the animals usings SOL"""
-    # Open a connection to the database
+    """Joining locations with animals in SQL"""
+    # Open a connection to the database, save it as conn
     with sqlite3.connect("./kennel.db") as conn:
 
-        # Just use these. It's a Black Box.
+        # The type of rows returned when we fetch
         conn.row_factory = sqlite3.Row
+        # What let's us execute queries
         db_cursor = conn.cursor()
 
         # Write the SQL query to get the information you want
@@ -88,8 +90,11 @@ def get_all_animals():
             a.breed,
             a.status,
             a.location_id,
-            a.customer_id
-        FROM animal a
+            a.customer_id,
+            l.name location_name,
+            l.address location_address
+        FROM Animal a
+        JOIN Location l ON l.id = a.location_id
         """
         )
 
@@ -115,10 +120,21 @@ def get_all_animals():
                 row["customer_id"],
             )
 
+            # Create a Location instance from the current row
+            location = Location(
+                row["location_id"], row["location_name"], row["location_address"]
+            )
+
+            # Add the dictionary representation of the location to the animal
+            animal.location = location.__dict__
+
+            # Create a Location instance from the current row
+
+            # Converting an object into a dictionary
             animals.append(animal.__dict__)
 
-    # Use `json` package to properly serialize list as JSON
-    return json.dumps(animals)
+            # Use `json` package to properly serialize list as JSON
+        return json.dumps(animals)
 
 
 def create_animal(animal):
