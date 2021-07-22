@@ -1,6 +1,6 @@
 class Animal:
-    """Class for creating an animal dictonary
-    """
+    """Class for creating an animal dictonary"""
+
     # Class initializer. It has 5 custom parameters, with the
     # special `self` parameter that every method on a class
     # needs as the first parameter.
@@ -13,5 +13,3 @@ class Animal:
         self.customer_id = customer_id
         self.location = None
         self.customer = None
-
-new_animal = Animal(1, "Snickers", "Dog", "Recreation", 1, 4)
