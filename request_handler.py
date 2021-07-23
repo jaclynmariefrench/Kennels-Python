@@ -212,28 +212,6 @@ class HandleRequests(BaseHTTPRequestHandler):
 
             return (resource, id)
 
-    # def parse_url(self, path):
-    #     """indexing the path"""
-    #     # Just like splitting a string in JavaScript. If the
-    #     # path is "/customers/1", the resulting list will
-    #     # have "" at index 0, "customers" at index 1, and "1"
-    #     # at index 2.
-    #     path_params = path.split("/")
-    #     resource = path_params[1]
-    #     id = None
-
-    #     # Try to get the item at index 2
-    #     try:
-    #         # Convert the string "1" to the integer 1
-    #         # This is the new parseInt()
-    #         id = int(path_params[2])
-    #     except IndexError:
-    #         pass  # No route parameter exists: /customers
-    #     except ValueError:
-    #         pass  # Request had trailing slash: /customers/
-
-    #     return (resource, id)  # This is a tuple
-
     def do_DELETE(self):
         """delete item by id"""
         # Set a 204 response code
